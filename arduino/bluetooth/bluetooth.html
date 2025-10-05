@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>SeeedXIAO BLE Demo</title>
+  </head>
+  <body>
+    <h1>BLE Test</h1>
+    <button id="connect">Connect to SeeedXIAO</button>
+    <pre id="log"></pre>
+
+    <script>
+      const log = (msg) => {
+        document.getElementById("log").textContent += msg + "\n";
+      };
+
+      document.getElementById("connect").addEventListener("click", async () => {
+        try {
+          const device = await navigator.bluetooth.requestDevice({
+            filters: [{ namePrefix: "Arduino" }],
+            optionalServices: ["deadbeef-1234-5678-1234-56789abcdef0"],
+          });
+
+          const server = await device.gatt.connect();
+          log("Connected to " + device.name);
+
+          const service = await server.getPrimaryService(
+            "deadbeef-1234-5678-1234-56789abcdef0"
+          );
+          const characteristic = await service.getCharacteristic(
+            "deadbeef-1234-5678-1234-56789abcdef1"
+          );
+
+          // Read initial value
+          const value = await characteristic.readValue();
+          log("Initial: " + new TextDecoder().decode(value));
+
+          // Subscribe for notifications
+          await characteristic.startNotifications();
+          characteristic.addEventListener(
+            "characteristicvaluechanged",
+            (event) => {
+              const val = new TextDecoder().decode(event.target.value);
+              log("Notify: " + val);
+            }
+          );
+
+          // Example: write to board
+          await characteristic.writeValue(
+            new TextEncoder().encode("Hello Browser")
+          );
+          log("Wrote 'Hello Browser'");
+        } catch (error) {
+          log("Error: " + error);
+        }
+      });
+    </script>
+  </body>
+</html>
