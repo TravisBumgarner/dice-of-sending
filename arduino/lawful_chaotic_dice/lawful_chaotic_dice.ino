@@ -11,6 +11,11 @@ BLEService simpleService("deadbeef-1234-5678-1234-56789abcdef0");
 BLEStringCharacteristic simpleChar("deadbeef-1234-5678-1234-56789abcdef1",
                                    BLERead | BLEWrite | BLENotify, 20);
 
+// ---------------------- Stability Tracking ----------------------
+unsigned long stableStart = 0;
+const unsigned long STABLE_TIME_MS = 1000;  // must rest this long before confirming result
+int lastFace = 0;
+
 // ---------------------- Setup ----------------------
 void setup() {
   Serial.begin(115200);
@@ -72,26 +77,34 @@ void loop() {
       float delta = fabs(mag - prevMag);
       prevMag = mag;
 
-      bool isMoving = delta > 0.25;  // sensitivity
+      bool isMoving = delta > 0.25;  // sensitivity threshold
 
       if (isMoving) {
         if (!rolling) {
           Serial.println("Rolling...");
           rolling = true;
+          lastFace = 0;
         }
       } else {
+        int face = mapToDieFace(x, y, z);
+
         if (rolling) {
-          int face = mapToDieFace(x, y, z);
-          if (face != 0) {
+          // just stopped moving
+          rolling = false;
+          stableStart = millis();
+          lastFace = face;
+        } else {
+          // still stable — check if it stayed on same side long enough
+          if (face != 0 && face == lastFace && (millis() - stableStart) > STABLE_TIME_MS) {
             Serial.print("Result: ");
             Serial.println(face);
 
-            // Send dice face over BLE
             char msg[10];
             sprintf(msg, "Face %d", face);
             simpleChar.writeValue(msg);
+
+            lastFace = 0;  // prevent repeat sends
           }
-          rolling = false;
         }
       }
 
@@ -110,7 +123,7 @@ int mapToDieFace(float x, float y, float z) {
   float az = fabs(z);
 
   if (ax > ay && ax > az) {
-    return (x > 0) ? 1 : 2;
+    return (x > 0) ? 2 : 5;
   } else if (ay > ax && ay > az) {
     return (y > 0) ? 3 : 4;
   } else if (az > ax && az > ay) {

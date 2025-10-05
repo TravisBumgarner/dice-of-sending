@@ -10,18 +10,6 @@ export const PALETTE = {
     700: '#374151',
     800: '#1F2937',
     900: '#111827'
-  },
-  wow: {
-    blueLight: 'rgba(109, 205, 235, 1)',
-    blueDark: '#068EA6',
-    redDark: '#a60606ff',
-    redLight: '#fd2323ff',
-    greenDark: '#49a606ff',
-    greenLight: '#a6ff49ff',
-    purpleDark: '#a606a1ff',
-    purpleLight: '#fd49fdff',
-    orangeDark: '#a64b06ff',
-    orangeLight: 'rgba(255, 166, 0, 1)'
   }
 }
 

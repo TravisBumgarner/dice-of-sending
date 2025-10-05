@@ -1,0 +1,11 @@
+- [ ] Add photos to readme
+- [ ] Law Abiding Chaos Dice
+- [ ] Print in blue
+- [x] Roll History
+- [x] Add calibration script
+- [ ] Incorporate and document calibration script
+- [ ] Define acceptable ranges for each number.
+- [ ] CAD Updates
+  - [ ] Add 3x3 circle (or square) grid to dice.
+  - [ ] Add USB C power slot
+- [ ] Add CAD Files

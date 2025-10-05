@@ -1,6 +1,6 @@
 # Setup
 
-## CAD Models
+## CAD
 
 1. CAD Model can be found [here](https://cad.onshape.com/documents/03b58467c8208d0aa1c9cc45/w/e2a0e9205aa77901d6f0e7f7/e/e3529496a038e29d77a46fd0?renderMode=0&uiState=68e2da0976614a4142e210ee)
 1. STLs can be found in `cad/`
