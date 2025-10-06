@@ -1,5 +1,5 @@
 {
-  "name": "dice-app",
+  "name": "lawful-evil-dice-app",
   "private": true,
   "scripts": {
     "bootstrap": "npm install && npm install --prefix backend && npm install --prefix frontend",

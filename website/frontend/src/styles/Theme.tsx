@@ -105,7 +105,7 @@ const baseThemeOptions: ThemeOptions = {
     }
   },
   typography: {
-    fontFamily: '"Satoshi", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
     h1: {
       fontSize: FONT_SIZES.HUGE.PX,
       fontWeight: 900

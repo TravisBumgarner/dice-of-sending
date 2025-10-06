@@ -2,6 +2,24 @@
 #include <Adafruit_ADXL345_U.h>
 #include <ArduinoBLE.h>
 
+// ---------------------- Calibration ----------------------
+
+// Use calibration sketch to calculate these values. 
+
+// How "close" a reading must be to a stored face vector to count as valid
+// (lower = stricter). Usually 1.5–2.5 works well for ±1g noise.
+float MATCH_THRESHOLD = 2.0;
+
+// Each row: {x, y, z} average when that face is UP
+float faceCalibrations[6][3] = {
+  {-0.16, -0.27, 11.77},  // Face 1
+  {-0.27, 9.41, 1.06},  // Face 2
+  {-9.85, -0.16, 1.02},  // Face 3
+  {0.08, -10.00, 1.73},  // Face 4
+  {9.85, 1.26, 1.92},  // Face 5
+  {-0.35, -0.35, -8.04}   // Face 6
+};
+
 // ---------------------- Accelerometer ----------------------
 Adafruit_ADXL345_Unified accel = Adafruit_ADXL345_Unified(12345);
 bool rolling = false;
@@ -118,16 +136,26 @@ void loop() {
 
 // ---------------------- Dice Face Mapping ----------------------
 int mapToDieFace(float x, float y, float z) {
-  float ax = fabs(x);
-  float ay = fabs(y);
-  float az = fabs(z);
+ int bestFace = 0;
+  float bestDist = 9999;
 
-  if (ax > ay && ax > az) {
-    return (x > 0) ? 2 : 5;
-  } else if (ay > ax && ay > az) {
-    return (y > 0) ? 3 : 4;
-  } else if (az > ax && az > ay) {
-    return (z > 0) ? 5 : 6;
+  for (int i = 0; i < 6; i++) {
+    float dx = x - faceCalibrations[i][0];
+    float dy = y - faceCalibrations[i][1];
+    float dz = z - faceCalibrations[i][2];
+    float dist = sqrt(dx * dx + dy * dy + dz * dz);
+
+    if (dist < bestDist) {
+      bestDist = dist;
+      bestFace = i + 1;
+    }
   }
-  return 0;  // ambiguous
+
+  // Only count as valid if we're clearly close to a known face
+  if (bestDist < MATCH_THRESHOLD) {
+    return bestFace;
+  } else {
+    // Too tilted or in between sides
+    return 0;
+  }
 }
