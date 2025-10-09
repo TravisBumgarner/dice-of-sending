@@ -11,6 +11,7 @@
 float MATCH_THRESHOLD = 2.0;
 
 // Each row: {x, y, z} average when that face is UP
+// Use calibration.ino sketch to tweak these values.
 float faceCalibrations[6][3] = {
   {-0.16, -0.27, 11.77},  // Face 1
   {-0.27, 9.41, 1.06},  // Face 2

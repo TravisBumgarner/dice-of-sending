@@ -8,9 +8,15 @@ import { GiHamburgerMenu } from 'react-icons/gi'
 
 const ROUTES = [
   {
+    key: 'about',
+    label: 'Item Description',
+    href: '/item_description',
+    target: undefined
+  },
+  {
     key: 'github',
-    label: 'GitHub',
-    href: 'https://github.com/TravisBumgarner/lawful-chaotic-dice',
+    label: 'Project Resources',
+    href: 'https://github.com/TravisBumgarner/dice-of-sending',
     target: '_blank'
   },
   {
@@ -60,7 +66,7 @@ const Navigation = () => {
       }}
     >
       <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-        <Typography variant="h1">Lawful Chaotic Dice</Typography>
+        <Typography variant="h1">Dice of Sending</Typography>
       </Link>
       <Tooltip title="Menu">
         <IconButton

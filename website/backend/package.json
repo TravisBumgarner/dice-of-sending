@@ -1,5 +1,5 @@
 {
-  "name": "lawful-evil-dice-backend",
+  "name": "dice-of-sending-app-backend",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",

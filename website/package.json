@@ -1,12 +1,12 @@
 {
-  "name": "lawful-evil-dice-app",
+  "name": "dice-of-sending-app",
   "private": true,
   "scripts": {
     "bootstrap": "npm install && npm install --prefix backend && npm install --prefix frontend",
     "dev": "concurrently -k -n backend,frontend -c red,blue \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
     "build": "rm -rf ./backend/dist && mkdir ./backend/dist && npm run build --prefix frontend && npm run build --prefix backend",
     "deploy": "cd backend && ./deploy.sh",
-    "ship-it": "npm run build && npm run deploy",
+    "deploy:nfs": "npm run build && npm run deploy",
     "start": "NODE_ENV=production npm run start --prefix backend",
     "lint": "eslint ./src --ext .ts,.tsx,.js,.jsx"
   },

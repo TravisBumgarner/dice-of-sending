@@ -23,7 +23,7 @@ const History = ({ history, currentUsername }: { history: DiceResult[]; currentU
     <Box
       id="history-container"
       sx={{
-        height: '200px',
+        height: '100px',
         overflowX: 'auto',
         overflowY: 'hidden',
         width: '70vw',
@@ -55,7 +55,7 @@ const History = ({ history, currentUsername }: { history: DiceResult[]; currentU
             flexShrink: 0 // Prevent dice from shrinking
           }}
         >
-          <Dice face={entry.roll} size={index === history.length - 1 ? 60 : 50} />
+          <Dice face={entry.roll} size={index === history.length - 1 ? 30 : 20} />
           <Typography variant="body2" sx={{ whiteSpace: 'nowrap' }}>
             {entry.username === currentUsername ? 'You' : entry.username}
           </Typography>

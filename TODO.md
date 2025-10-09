@@ -1,13 +1,20 @@
-- [ ] Add photos to readme
+- [x] Add photos to readme
 - [x] Lawful Evil Dice
-- [ ] Print in blue
+- [x] Print in blue
 - [x] Roll History
 - [x] Add calibration script
 - [x] Incorporate and document calibration script
-- [ ] Define acceptable ranges
+- [x] Define acceptable ranges
  for each number.
-- [ ] CAD Updates
+- [x] CAD Updates
   - [x] Add 3x3 circle (or square) grid to dice.
-  - [ ] Add USB C power slot
+  - [x] Add USB C power slot
 - [ ] Add CAD Files
 - [x] Deploy
+- [ ] About
+- [ ] Prod connects to local host
+- [ ] Better finished photos. 
+- [ ] Posts
+    - [ ] Thingiverse
+    - [ ] hackaday.io
+    - [ ] Reddit - dnd arduino, where else?
