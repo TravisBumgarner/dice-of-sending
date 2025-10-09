@@ -55,7 +55,7 @@ const History = ({ history, currentUsername }: { history: DiceResult[]; currentU
             flexShrink: 0 // Prevent dice from shrinking
           }}
         >
-          <Dice face={entry.roll} size={index === history.length - 1 ? 30 : 20} />
+          <Dice face={entry.roll} size={index === history.length - 1 ? 50 : 40} />
           <Typography variant="body2" sx={{ whiteSpace: 'nowrap' }}>
             {entry.username === currentUsername ? 'You' : entry.username}
           </Typography>
