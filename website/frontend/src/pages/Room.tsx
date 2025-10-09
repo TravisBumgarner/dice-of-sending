@@ -10,8 +10,7 @@ import Dice from '../components/Dice'
 const History = ({ history, currentUsername }: { history: DiceResult[]; currentUsername: string }) => {
   const historyContainer = useRef<HTMLDivElement | null>(null)
 
-  useEffect(() => {
-    // scroll all the way to the right when new dice is added
+  const scrollToRight = useCallback(() => {
     const el = historyContainer.current
     if (el) {
       // Use setTimeout to ensure DOM has updated
@@ -21,10 +20,28 @@ const History = ({ history, currentUsername }: { history: DiceResult[]; currentU
         }
       }, 0)
     }
-  }, [history])
+  }, [])
+
+  useEffect(() => {
+    // scroll all the way to the right when new dice is added
+    scrollToRight()
+  }, [history, scrollToRight])
+
+  useEffect(() => {
+    // scroll to right on window resize
+    const handleResize = () => {
+      scrollToRight()
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [scrollToRight])
 
   return (
     <Box
+      ref={historyContainer}
       sx={{
         height: '100px',
         overflowX: 'auto',
