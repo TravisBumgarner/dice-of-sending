@@ -26,6 +26,10 @@ void setup() {
   Serial.begin(115200);
   while (!Serial);
 
+  // allow sensor power-on time
+  delay(200);
+
+
   Serial.println("ADXL345 Calibration / Detection Mode");
   if (!accel.begin()) {
     Serial.println("No ADXL345 detected ... check wiring!");
