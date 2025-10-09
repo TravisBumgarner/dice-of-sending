@@ -1,27 +1,30 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import socket from '../services/socket'
 import { useParams, useSearchParams } from 'react-router'
 import { Box, Button, Typography } from '@mui/material'
 import { useArduinoDiceBLE } from '../hooks/useBluetoothDice'
-import { SPACING } from '../styles/styleConsts'
+import { PALETTE, SPACING } from '../styles/styleConsts'
 import Dice from '../components/Dice'
 
 const History = ({ history, currentUsername }: { history: DiceResult[]; currentUsername: string }) => {
+  const historyContainer = useRef<HTMLDivElement | null>(null)
+
   useEffect(() => {
     // scroll all the way to the right when new dice is added
-    const historyContainer = document.getElementById('history-container')
-    if (historyContainer) {
+    const el = historyContainer.current
+    if (el) {
       // Use setTimeout to ensure DOM has updated
       setTimeout(() => {
-        historyContainer.scrollLeft = historyContainer.scrollWidth
+        if (el) {
+          el.scrollLeft = el.scrollWidth
+        }
       }, 0)
     }
   }, [history])
 
   return (
     <Box
-      id="history-container"
       sx={{
         height: '100px',
         overflowX: 'auto',
@@ -55,7 +58,7 @@ const History = ({ history, currentUsername }: { history: DiceResult[]; currentU
             flexShrink: 0 // Prevent dice from shrinking
           }}
         >
-          <Dice face={entry.roll} size={index === history.length - 1 ? 50 : 40} />
+          <Dice face={entry.roll} size={index === history.length - 1 ? 60 : 50} />
           <Typography variant="body2" sx={{ whiteSpace: 'nowrap' }}>
             {entry.username === currentUsername ? 'You' : entry.username}
           </Typography>
@@ -79,6 +82,7 @@ const Room = () => {
   const [searchParams] = useSearchParams()
   const [showLogs, setShowLogs] = useState(false)
   const username = searchParams.get('username') || ''
+  const logsContainer = useRef<HTMLDivElement | null>(null)
 
   const updateResults = useCallback((newResult: DiceResult) => {
     setResult(newResult)
@@ -99,6 +103,18 @@ const Room = () => {
   )
 
   const { connect, write, connected, logs, disconnect } = useArduinoDiceBLE({ handleMessage })
+
+  useEffect(() => {
+    // scroll all the way to the right when new dice is added
+    if (logsContainer.current) {
+      // Use setTimeout to ensure DOM has updated
+      setTimeout(() => {
+        if (logsContainer.current) {
+          logsContainer.current.scrollTop = logsContainer.current.scrollHeight
+        }
+      }, 0)
+    }
+  }, [logs.length])
 
   const handleCopyToClipboard = useCallback(() => {
     navigator.clipboard.writeText(window.location.href)
@@ -167,12 +183,19 @@ const Room = () => {
       </Box>
       {showLogs && (
         <Box
+          ref={logsContainer}
           sx={{
             position: 'fixed',
             left: SPACING.MEDIUM.PX,
             top: 'calc(50% - 300px)',
             height: '300px',
-            overflow: 'auto'
+            overflow: 'auto',
+            backgroundColor: PALETTE.grayscale[500],
+            color: PALETTE.grayscale[50],
+            padding: SPACING.MEDIUM.PX,
+            borderRadius: '8px',
+            width: '300px',
+            zIndex: 1000
           }}
         >
           {<pre>{logs.join('\n')}</pre>}
