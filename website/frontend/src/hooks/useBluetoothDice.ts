@@ -1,10 +1,10 @@
 import { useState, useCallback, useEffect } from 'react'
+
 const SERVICE_UUID = 'deadbeef-1234-5678-1234-56789abcdef0'
 const CHARACTERISTIC_UUID = 'deadbeef-1234-5678-1234-56789abcdef1'
 
 export function useArduinoDiceBLE({ handleMessage }: { handleMessage: (msg: string) => void }) {
   const [device, setDevice] = useState<BluetoothDevice | null>(null)
-  // const [server, setServer] = useState<BluetoothRemoteGATTServer | null>(null)
   const [characteristic, setCharacteristic] = useState<BluetoothRemoteGATTCharacteristic | null>(null)
   const [connected, setConnected] = useState(false)
   const [logs, setLogs] = useState<string[]>([])
@@ -18,18 +18,14 @@ export function useArduinoDiceBLE({ handleMessage }: { handleMessage: (msg: stri
   )
 
   const disconnect = useCallback(() => {
-    if (device?.gatt?.connected) {
-      device.gatt.disconnect()
-    }
+    if (device?.gatt?.connected) device.gatt.disconnect()
   }, [device])
 
   const connect = useCallback(async () => {
     try {
       const device = await navigator.bluetooth.requestDevice({
-        filters: [{ namePrefix: 'Arduino' }],
+        filters: [{ namePrefix: 'BLE Dice' }],
         optionalServices: [SERVICE_UUID]
-        // If device isn't pairing, disable the above lines and use the following instead:
-        // acceptAllDevices: true
       })
 
       const server = await device.gatt?.connect()
@@ -37,27 +33,23 @@ export function useArduinoDiceBLE({ handleMessage }: { handleMessage: (msg: stri
 
       log(`Connected to ${device.name}`)
       setDevice(device)
-      // setServer(server)
       setConnected(true)
 
       const service = await server.getPrimaryService(SERVICE_UUID)
       const char = await service.getCharacteristic(CHARACTERISTIC_UUID)
       setCharacteristic(char)
 
-      // Read initial value
+      // Read initial face
       const value = await char.readValue()
-      log('Initial: ' + new TextDecoder().decode(value))
+      log(`Initial face: ${value.getUint8(0)}`)
 
       // Listen for notifications
       await char.startNotifications()
       char.addEventListener('characteristicvaluechanged', event => {
-        const val = new TextDecoder().decode((event.target as BluetoothRemoteGATTCharacteristic).value!)
-        log(val)
+        const val = (event.target as BluetoothRemoteGATTCharacteristic).value!
+        const face = val.getUint8(0)
+        log(`Face up: ${face}`)
       })
-
-      // Example: write to board
-      // await char.writeValue(new TextEncoder().encode('Hello Browser'))
-      // log("Wrote 'Hello Browser'")
     } catch (error) {
       log('Error: ' + (error as Error).message)
     }
@@ -78,7 +70,6 @@ export function useArduinoDiceBLE({ handleMessage }: { handleMessage: (msg: stri
       log(`Disconnected from ${device.name}`)
       setConnected(false)
       setDevice(null)
-      // setServer(null)
       setCharacteristic(null)
     }
     device.addEventListener('gattserverdisconnected', handleDisconnect)

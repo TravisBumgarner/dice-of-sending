@@ -18,3 +18,8 @@
     - [ ] Thingiverse
     - [ ] hackaday.io
     - [ ] Reddit - dnd arduino, where else?
+- [ ] Disable Safari / Firefox. 
+
+
+
+    https://github.com/hanyazou/BMI160-Arduino

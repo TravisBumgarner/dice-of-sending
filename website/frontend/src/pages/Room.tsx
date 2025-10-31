@@ -108,8 +108,8 @@ const Room = () => {
 
   const handleMessage = useCallback(
     (msg: string) => {
-      if (msg.startsWith('Face ')) {
-        const roll = parseInt(msg.replace('Face ', ''))
+      if (msg.startsWith('Face up: ')) {
+        const roll = parseInt(msg.replace('Face up: ', ''))
         if (!isNaN(roll)) {
           socket.emit('roll_dice', { room, roll, username } as SocketMessage)
           return
