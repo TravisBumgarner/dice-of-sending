@@ -1,25 +1,6 @@
-- [x] Add photos to readme
-- [x] Lawful Evil Dice
-- [x] Print in blue
-- [x] Roll History
-- [x] Add calibration script
-- [x] Incorporate and document calibration script
-- [x] Define acceptable ranges
- for each number.
-- [x] CAD Updates
-  - [x] Add 3x3 circle (or square) grid to dice.
-  - [x] Add USB C power slot
-- [ ] Add CAD Files
-- [x] Deploy
-- [ ] About
-- [ ] Prod connects to local host
-- [ ] Better finished photos. 
 - [ ] Posts
-    - [ ] Thingiverse
-    - [ ] hackaday.io
-    - [ ] Reddit - dnd arduino, where else?
-- [ ] Disable Safari / Firefox. 
+  - [ ] Thingiverse
+  - [ ] hackaday.io
+  - [ ] Reddit - dnd arduino, where else?
 
-
-
-    https://github.com/hanyazou/BMI160-Arduino
+  https://github.com/hanyazou/BMI160-Arduino

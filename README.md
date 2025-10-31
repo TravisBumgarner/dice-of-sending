@@ -8,9 +8,17 @@ Those attuned to the Dice of Sending may appear obedient while still indulging t
 
 ![Finished D6 dice](./readme/final.jpg)
 
+# Preface
+
+This project is still a work in progress and is mostly there but there are still some rough edges.
+
+[Join the discussion on Discord](https://discord.gg/wJ8eyUJk).
+
 # Quick Start
 
 Full setup below.
+
+
 
 1. Solder Seed Studio, battery, and accelerometer together.
 1. Calibrate dice with `arduino/calibration/calibration.ino`
@@ -28,17 +36,17 @@ Full setup below.
 
 ## Parts
 
-1. 1× USB-C cable
-1. 1× Seeed Studio XIAO nRF52840
-1. 1× ADXL345 accelerometer
-1. 1× 3.7V 60mAh 0.22Wh battery
-1. 2× 10K resistors
-1. PCB wire
-1. Eplzon PCB board 89mm × 52mm (You can use a smaller board but will need to design a custom CAD model.)
+1. 1× `USB-C cable`
+1. 1× `Seeed Studio XIAO nRF52840` (Or any Arduino device with Bluetooth)
+1. 1× `ADXL345 accelerometer` OR `BMI160 accelerometer + gyroscope`
+1. 1× `3.7V 60mAh 0.22Wh battery`
+1. 2× `10K resistors` (If using the ADXL345)
+1. `PCB wire`
+1. `Eplzon PCB board 89mm × 52mm` OR `Roughly 39mm x 39mm cut proto board` for the BMI160. (The V2 dice fits this board)
 
 ## Code
 
-- `dice_of_sending/` — Full code with Bluetooth and dice rolling.
+- `dice_of_sending/` — Full code with Bluetooth and dice rolling. Choose the code depending on your accelerometer. 
 - `bluetooth/` — For testing just the Bluetooth communication in isolation. Includes a `bluetooth.html` file for visual help. Open it in your browser, connect, and you should see messages like `Notify: Hello Browser` and `Wrote 'Hello Browser'`.
 - `acceleration/` — For testing the accelerometer. Open `Tools → Serial Monitor` to see acceleration outputs.
 - `calibration/` — Once fully assembled, use this code to get the acceleration values for each side of the dice. Enter these values into the `faceCalibrations` array in `dice_of_sending/`.
@@ -61,7 +69,7 @@ Ensure the accelerometer PCB is parallel to the protoboard.
 
 ## CAD
 
-- STLs can be found in `cad/`.
+- STLs can be found in `cad/`. 
 - Onshape models: [Dice V1 Top](https://cad.onshape.com/documents/4b5c1bf9194b23f57db470b0/w/0611180dab1b4d42950964e7/e/09704a1026edf3dbcc83c50e), [Dice V1 Bottom](https://cad.onshape.com/documents/03b58467c8208d0aa1c9cc45/w/e2a0e9205aa77901d6f0e7f7/e/e3529496a038e29d77a46fd0).
 
 1. Print models.

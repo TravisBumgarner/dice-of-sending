@@ -34,6 +34,8 @@ void setup() {
   Serial.begin(9600);
   while (!Serial);
 
+  delay(300); // let power rails and BMI160 settle
+
   if (!BMI160.begin(BMI160GenClass::I2C_MODE, 0x68)) {
     Serial.println("BMI160 init failed!");
     while (1);

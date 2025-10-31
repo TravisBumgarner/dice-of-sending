@@ -17,6 +17,17 @@ export function useArduinoDiceBLE({ handleMessage }: { handleMessage: (msg: stri
     [handleMessage]
   )
 
+  const handleDisconnection = useCallback(() => {
+    if (device) {
+      log(`Disconnected from ${device.name}`)
+    } else {
+      log('Device disconnected')
+    }
+    setConnected(false)
+    setDevice(null)
+    setCharacteristic(null)
+  }, [device, log])
+
   const disconnect = useCallback(() => {
     if (device?.gatt?.connected) device.gatt.disconnect()
   }, [device])
@@ -57,24 +68,30 @@ export function useArduinoDiceBLE({ handleMessage }: { handleMessage: (msg: stri
 
   const write = useCallback(
     async (text: string) => {
-      if (!characteristic) return
-      await characteristic.writeValue(new TextEncoder().encode(text))
-      log(`Wrote '${text}'`)
+      if (!characteristic || !device?.gatt?.connected) {
+        log('Cannot write: Device not connected')
+        return
+      }
+      try {
+        await characteristic.writeValue(new TextEncoder().encode(text))
+        log(`Wrote '${text}'`)
+      } catch (error) {
+        log(`Write failed: ${(error as Error).message}`)
+        // If write fails, check if device is still connected
+        if (!device?.gatt?.connected) {
+          handleDisconnection()
+        }
+      }
     },
-    [characteristic, log]
+    [characteristic, device, log, handleDisconnection]
   )
 
   useEffect(() => {
     if (!device) return
-    const handleDisconnect = () => {
-      log(`Disconnected from ${device.name}`)
-      setConnected(false)
-      setDevice(null)
-      setCharacteristic(null)
-    }
-    device.addEventListener('gattserverdisconnected', handleDisconnect)
-    return () => device.removeEventListener('gattserverdisconnected', handleDisconnect)
-  }, [device, log])
+
+    device.addEventListener('gattserverdisconnected', handleDisconnection)
+    return () => device.removeEventListener('gattserverdisconnected', handleDisconnection)
+  }, [device, handleDisconnection])
 
   return { connect, write, connected, logs, disconnect }
 }
