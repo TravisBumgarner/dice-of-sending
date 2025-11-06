@@ -3,17 +3,21 @@
 // Define a custom service and characteristic
 BLEService simpleService("deadbeef-1234-5678-1234-56789abcdef0");
 BLEStringCharacteristic simpleChar("deadbeef-1234-5678-1234-56789abcdef1",
-                                    BLERead | BLEWrite | BLENotify, 20);
-void setup() {
+                                   BLERead | BLEWrite | BLENotify, 20);
+void setup()
+{
   Serial.begin(115200);
-  while (!Serial);
+  while (!Serial)
+    ;
 
-  if (!BLE.begin()) {
+  if (!BLE.begin())
+  {
     Serial.println("Starting BLE failed!");
-    while (1);
+    while (1)
+      ;
   }
 
-  BLE.setLocalName("Arduino");   // Name seen from your Mac
+  BLE.setLocalName("Arduino");
   BLE.setAdvertisedService(simpleService);
 
   simpleService.addCharacteristic(simpleChar);
@@ -26,15 +30,19 @@ void setup() {
   Serial.println("BLE peripheral is now advertising as 'Arduino'");
 }
 
-void loop() {
+void loop()
+{
   BLEDevice central = BLE.central();
 
-  if (central) {
+  if (central)
+  {
     Serial.print("Connected to central: ");
     Serial.println(central.address());
 
-    while (central.connected()) {
-      if (simpleChar.written()) {
+    while (central.connected())
+    {
+      if (simpleChar.written())
+      {
         Serial.print("Got from Mac: ");
         Serial.println(simpleChar.value());
       }

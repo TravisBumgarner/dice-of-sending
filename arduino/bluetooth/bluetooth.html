@@ -17,7 +17,7 @@
       document.getElementById("connect").addEventListener("click", async () => {
         try {
           const device = await navigator.bluetooth.requestDevice({
-            filters: [{ namePrefix: "Arduino" }],
+            filters: [{ namePrefix: "Dice" }],
             optionalServices: ["deadbeef-1234-5678-1234-56789abcdef0"],
           });
 

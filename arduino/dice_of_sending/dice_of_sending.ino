@@ -18,9 +18,10 @@ float faceCalibrations[6][3] = {
 // ---------------------- BLE ----------------------
 
 BLEService diceService("deadbeef-1234-5678-1234-56789abcdef0");
-BLEUnsignedCharCharacteristic faceCharacteristic(
+BLEStringCharacteristic faceCharacteristic(
   "deadbeef-1234-5678-1234-56789abcdef1",
-  BLERead | BLENotify
+  BLERead | BLENotify,
+  50
 );
 
 // ---------------------- State ----------------------
@@ -30,24 +31,57 @@ int lastDetectedFace = -1;
 int stableCount = 0;
 const int STABLE_THRESHOLD = 5;
 
-void setup() {
-  pinMode(LED_BUILTIN, OUTPUT); // Battery debugging
+// ---------------------- Blink Helpers ----------------------
 
-  Serial.begin(9600);
-  while (!Serial);
-
-  delay(300); // let power rails and BMI160 settle
-
-  if (!BMI160.begin(BMI160GenClass::I2C_MODE, 0x68)) {
-    Serial.println("BMI160 init failed!");
-    while (1);
+void blinkError(int count) {
+  for (;;) {
+    for (int i = 0; i < count; i++) {
+      digitalWrite(LED_BUILTIN, LOW);  // ON (active low)
+      delay(150);
+      digitalWrite(LED_BUILTIN, HIGH); // OFF
+      delay(150);
+    }
+    delay(600);
   }
-  Serial.println("BMI160 ready.");
+}
+
+void blinkSlow() {
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(300);
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(1200);
+}
+
+// ---------------------- BLE/Debug Helpers ----------------------
+
+void sendDebug(const char* msg) {
+  char buf[60];
+  snprintf(buf, sizeof(buf), "Debug: %s", msg);
+  faceCharacteristic.writeValue(buf);
+}
+
+void sendRoll(int face) {
+  char buf[32];
+  snprintf(buf, sizeof(buf), "Roll: %d", face);
+  faceCharacteristic.writeValue(buf);
+}
+
+// ---------------------- Setup ----------------------
+
+void setup() {
+  delay(300);
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH); // start OFF
 
   if (!BLE.begin()) {
-    Serial.println("Starting BLE failed!");
-    while (1);
+    blinkError(3); // 3-blink pattern
   }
+
+  if (!BMI160.begin(BMI160GenClass::I2C_MODE, 0x68)) {
+    blinkError(2); // 2-blink pattern
+  }
+  
+  sendDebug("BMI160 ready");
 
   BLE.setLocalName("Dice of Sending");
   BLE.setDeviceName("Dice of Sending");
@@ -56,16 +90,18 @@ void setup() {
   BLE.addService(diceService);
   BLE.advertise();
 
-  Serial.println("BLE Dice advertising...");
+  sendDebug("BLE Dice advertising");
 }
 
-void loop() {
-  digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
+// ---------------------- Loop ----------------------
 
+void loop() {
   BLEDevice central = BLE.central();
 
   if (central) {
-    Serial.println("Bluetooth connection established.");
+    sendDebug("BLE connected");
+    digitalWrite(LED_BUILTIN, LOW); // solid ON while connected
+
     while (central.connected()) {
       int ax, ay, az;
       BMI160.readAccelerometer(ax, ay, az);
@@ -76,16 +112,13 @@ void loop() {
       int detectedFace = detectFace(fx, fy, fz);
 
       if (detectedFace == -1) {
-        // Die is moving or between faces — reset currentFace
         currentFace = -1;
         stableCount = 0;
       } else if (detectedFace == lastDetectedFace) {
         stableCount++;
         if (stableCount >= STABLE_THRESHOLD && detectedFace != currentFace) {
           currentFace = detectedFace;
-          Serial.print("Stable face: ");
-          Serial.println(currentFace + 1);
-          faceCharacteristic.writeValue((uint8_t)(currentFace + 1));
+          sendRoll(currentFace + 1);
         }
       } else {
         stableCount = 0;
@@ -94,6 +127,9 @@ void loop() {
 
       delay(100);
     }
+  } else {
+    // Not connected: slow blink to show alive
+    blinkSlow();
   }
 }
 

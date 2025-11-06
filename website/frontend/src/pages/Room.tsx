@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import socket from '../services/socket'
-import { useParams, useSearchParams } from 'react-router'
-import { Box, Button, Typography } from '@mui/material'
+import { useParams } from 'react-router'
+import { Box, Button, Typography, TextField } from '@mui/material'
 import { useArduinoDiceBLE } from '../hooks/useBluetoothDice'
 import { PALETTE, SPACING } from '../styles/styleConsts'
 import Dice from '../components/Dice'
@@ -96,9 +96,9 @@ const Room = () => {
   const [result, setResult] = useState<DiceResult | null>(null)
   const [history, setHistory] = useState<DiceResult[]>([])
   const { room } = useParams<{ room: string }>()
-  const [searchParams] = useSearchParams()
   const [showLogs, setShowLogs] = useState(false)
-  const username = searchParams.get('username') || ''
+  const [username, setUsername] = useState<string>('')
+  const [hasJoined, setHasJoined] = useState<boolean>(false)
   const logsContainer = useRef<HTMLDivElement | null>(null)
 
   const updateResults = useCallback((newResult: DiceResult) => {
@@ -108,8 +108,8 @@ const Room = () => {
 
   const handleMessage = useCallback(
     (msg: string) => {
-      if (msg.startsWith('Face up: ')) {
-        const roll = parseInt(msg.replace('Face up: ', ''))
+      if (msg.startsWith('Roll: ')) {
+        const roll = parseInt(msg.replace('Roll: ', ''))
         if (!isNaN(roll)) {
           socket.emit('roll_dice', { room, roll, username } as SocketMessage)
           return
@@ -133,26 +133,75 @@ const Room = () => {
     }
   }, [logs.length])
 
+  const handleJoinRoom = useCallback(() => {
+    if (username.trim()) {
+      socket.emit('join_room', { room, username: username.trim() })
+      setHasJoined(true)
+    }
+  }, [room, username])
+
   const handleCopyToClipboard = useCallback(() => {
     navigator.clipboard.writeText(window.location.href)
     alert('Copied room to  clipboard!')
   }, [])
 
   useEffect(() => {
-    if (username) {
-      socket.emit('join_room', { room, username })
-    }
     socket.on('dice_result', (data: SocketMessage) => {
       updateResults(data)
     })
     return () => {
       socket.off('dice_result')
     }
-  }, [room, username, updateResults])
+  }, [updateResults])
 
   const handleSendPing = () => {
     setShowLogs(true)
     write('Ping from web app')
+  }
+
+  if (!hasJoined) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 2,
+          p: 2,
+          height: '100%',
+          justifyContent: 'center',
+          margin: '0 auto',
+          width: '400px',
+          textAlign: 'center'
+        }}
+      >
+        <Typography variant="h2" sx={{ fontSize: '24px' }} gutterBottom>
+          Join Room
+          <br /> {room}
+        </Typography>
+        <TextField
+          fullWidth
+          label="What's your name?"
+          value={username}
+          onChange={e => setUsername(e.target.value)}
+          onKeyPress={e => {
+            if (e.key === 'Enter' && username.trim()) {
+              handleJoinRoom()
+            }
+          }}
+          autoFocus
+        />
+        <Button
+          variant="contained"
+          onClick={handleJoinRoom}
+          disabled={!username.trim()}
+          fullWidth
+          sx={{ fontSize: '18px' }}
+        >
+          Join Room
+        </Button>
+      </Box>
+    )
   }
 
   return (
