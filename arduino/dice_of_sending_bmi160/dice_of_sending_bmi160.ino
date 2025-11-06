@@ -31,6 +31,8 @@ int stableCount = 0;
 const int STABLE_THRESHOLD = 5;
 
 void setup() {
+  pinMode(LED_BUILTIN, OUTPUT); // Battery debugging
+
   Serial.begin(9600);
   while (!Serial);
 
@@ -58,6 +60,8 @@ void setup() {
 }
 
 void loop() {
+  digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
+
   BLEDevice central = BLE.central();
 
   if (central) {

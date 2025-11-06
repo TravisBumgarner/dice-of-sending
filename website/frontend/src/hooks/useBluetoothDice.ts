@@ -35,7 +35,7 @@ export function useArduinoDiceBLE({ handleMessage }: { handleMessage: (msg: stri
   const connect = useCallback(async () => {
     try {
       const device = await navigator.bluetooth.requestDevice({
-        filters: [{ namePrefix: 'BLE Dice' }],
+        filters: [{ namePrefix: 'Dice' }],
         optionalServices: [SERVICE_UUID]
       })
 
