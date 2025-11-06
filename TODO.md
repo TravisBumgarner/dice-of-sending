@@ -1,3 +1,6 @@
+- [ ] Photoshoot
+- [ ] Add photos to docs
+- [ ] One last pass of everything
 - [ ] Posts
   - [ ] Thingiverse
   - [ ] hackaday.io
