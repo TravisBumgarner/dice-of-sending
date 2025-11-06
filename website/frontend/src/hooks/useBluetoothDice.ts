@@ -51,7 +51,7 @@ export function useArduinoDiceBLE({ handleMessage }: { handleMessage: (msg: stri
       await char.startNotifications()
       char.addEventListener('characteristicvaluechanged', event => {
         const val = (event.target as BluetoothRemoteGATTCharacteristic).value!
-        const text = new TextDecoder().decode(val.buffer).trim()
+        const text = new TextDecoder().decode(val).trim()
         if (text.startsWith('Roll:')) log(text)
         else if (text.startsWith('Debug:')) log(text)
         else log(`Msg: ${text}`)

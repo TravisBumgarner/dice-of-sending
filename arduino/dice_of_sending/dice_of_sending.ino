@@ -7,10 +7,10 @@
 float MATCH_THRESHOLD = 0.2;
 
 float faceCalibrations[6][3] = {
-  {0.040, -0.085, 1.048},
-  {1.014, -0.044, -0.006},
   {-0.044, 0.008, -0.965},
   {-0.986, -0.033, 0.029},
+  {0.040, -0.085, 1.048},
+  {1.014, -0.044, -0.006},
   {0.007, -1.035, -0.027},
   {0.080, 0.967, 0.136}
 };
@@ -80,7 +80,7 @@ void setup() {
   if (!BMI160.begin(BMI160GenClass::I2C_MODE, 0x68)) {
     blinkError(2); // 2-blink pattern
   }
-  
+
   sendDebug("BMI160 ready");
 
   BLE.setLocalName("Dice of Sending");
