@@ -18,11 +18,8 @@ export function useArduinoDiceBLE({ handleMessage }: { handleMessage: (msg: stri
   )
 
   const handleDisconnection = useCallback(() => {
-    if (device) {
-      log(`Disconnected from ${device.name}`)
-    } else {
-      log('Device disconnected')
-    }
+    if (device) log(`Disconnected from ${device.name}`)
+    else log('Device disconnected')
     setConnected(false)
     setDevice(null)
     setCharacteristic(null)
@@ -50,16 +47,14 @@ export function useArduinoDiceBLE({ handleMessage }: { handleMessage: (msg: stri
       const char = await service.getCharacteristic(CHARACTERISTIC_UUID)
       setCharacteristic(char)
 
-      // Read initial face
-      const value = await char.readValue()
-      log(`Initial face: ${value.getUint8(0)}`)
-
-      // Listen for notifications
+      // Listen for notifications (string messages)
       await char.startNotifications()
       char.addEventListener('characteristicvaluechanged', event => {
         const val = (event.target as BluetoothRemoteGATTCharacteristic).value!
-        const face = val.getUint8(0)
-        log(`Face up: ${face}`)
+        const text = new TextDecoder().decode(val).trim()
+        if (text.startsWith('Roll:')) log(text)
+        else if (text.startsWith('Debug:')) log(text)
+        else log(`Msg: ${text}`)
       })
     } catch (error) {
       log('Error: ' + (error as Error).message)
@@ -74,13 +69,10 @@ export function useArduinoDiceBLE({ handleMessage }: { handleMessage: (msg: stri
       }
       try {
         await characteristic.writeValue(new TextEncoder().encode(text))
-        log(`Wrote '${text}'`)
+        log(`Sending: '${text}'...`)
       } catch (error) {
         log(`Write failed: ${(error as Error).message}`)
-        // If write fails, check if device is still connected
-        if (!device?.gatt?.connected) {
-          handleDisconnection()
-        }
+        if (!device?.gatt?.connected) handleDisconnection()
       }
     },
     [characteristic, device, log, handleDisconnection]
@@ -88,7 +80,6 @@ export function useArduinoDiceBLE({ handleMessage }: { handleMessage: (msg: stri
 
   useEffect(() => {
     if (!device) return
-
     device.addEventListener('gattserverdisconnected', handleDisconnection)
     return () => device.removeEventListener('gattserverdisconnected', handleDisconnection)
   }, [device, handleDisconnection])

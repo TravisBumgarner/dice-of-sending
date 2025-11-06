@@ -1,6 +1,7 @@
+- [ ] Photoshoot
+- [ ] Add photos to docs
+- [ ] One last pass of everything
 - [ ] Posts
   - [ ] Thingiverse
   - [ ] hackaday.io
   - [ ] Reddit - dnd arduino, where else?
-
-  https://github.com/hanyazou/BMI160-Arduino

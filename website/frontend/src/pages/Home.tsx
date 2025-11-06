@@ -8,31 +8,21 @@ import { SPACING } from '../styles/styleConsts'
 export default function App() {
   const navigate = useNavigate()
   const [inputRoomName, setInputRoomName] = useState('')
-  const [username, setUsername] = useState('')
 
   const handleCreateRoom = useCallback(() => {
     const roomName = generateRoomName()
     // socket.emit('create_room', { room: roomName })
-    navigate(`/room/${roomName}?username=${encodeURIComponent(username)}`)
-  }, [navigate, username])
+    navigate(`/room/${roomName}`)
+  }, [navigate])
 
   const handleJoinRoom = useCallback(() => {
-    navigate(`/room/${inputRoomName}?username=${encodeURIComponent(username)}`)
-  }, [inputRoomName, navigate, username])
+    navigate(`/room/${inputRoomName}`)
+  }, [inputRoomName, navigate])
 
   return (
     <Box sx={wrapperSX}>
       <Box sx={boxSX}>
-        <TextField
-          size="small"
-          type="text"
-          fullWidth
-          placeholder="What's your name?"
-          value={username}
-          onChange={e => setUsername(e.target.value)}
-          sx={{ marginBottom: SPACING.SMALL.PX }}
-        />
-        <Button variant="contained" fullWidth onClick={handleCreateRoom} disabled={username.trim().length === 0}>
+        <Button variant="contained" fullWidth onClick={handleCreateRoom}>
           Create Room
         </Button>
         <p style={{ margin: 0 }}>Or</p>
@@ -52,11 +42,7 @@ export default function App() {
             value={inputRoomName}
             onChange={e => setInputRoomName(e.target.value)}
           />
-          <Button
-            variant="contained"
-            disabled={inputRoomName.length === 0 || username.trim().length === 0}
-            onClick={handleJoinRoom}
-          >
+          <Button variant="contained" disabled={inputRoomName.length === 0} onClick={handleJoinRoom}>
             Join
           </Button>
         </Box>
