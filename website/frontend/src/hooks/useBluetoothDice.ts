@@ -69,7 +69,7 @@ export function useArduinoDiceBLE({ handleMessage }: { handleMessage: (msg: stri
       }
       try {
         await characteristic.writeValue(new TextEncoder().encode(text))
-        log(`Wrote '${text}'`)
+        log(`Sending: '${text}'...`)
       } catch (error) {
         log(`Write failed: ${(error as Error).message}`)
         if (!device?.gatt?.connected) handleDisconnection()

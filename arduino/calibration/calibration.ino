@@ -7,12 +7,14 @@ float readings[NUM_FACES][3];
 
 void setup() {
   Serial.begin(115200);
-  while (!Serial);
+  while (!Serial)
+    ;
   Wire.begin();
 
   if (!BMI160.begin(BMI160GenClass::I2C_MODE, i2c_addr)) {
     Serial.println("BMI160 initialization failed!");
-    while (1);
+    while (1)
+      ;
   }
 
   Serial.println("\n--- BMI160 Dice Calibration ---");
@@ -39,8 +41,9 @@ void waitForUser(int faceNumber) {
   Serial.print("Place FACE ");
   Serial.print(faceNumber);
   Serial.println(" UP, then press ENTER...");
-  while (!Serial.available());
-  while (Serial.available()) Serial.read(); // clear buffer
+  while (!Serial.available())
+    ;
+  while (Serial.available()) Serial.read();  // clear buffer
 }
 
 void recordFace(int face) {

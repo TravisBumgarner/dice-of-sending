@@ -122,8 +122,8 @@ const Room = () => {
   const { connect, write, connected, logs, disconnect } = useArduinoDiceBLE({ handleMessage })
 
   useEffect(() => {
-    // scroll all the way to the right when new dice is added
-    if (logsContainer.current) {
+    // scroll to bottom when new logs are added or logs become visible
+    if (showLogs && logsContainer.current) {
       // Use setTimeout to ensure DOM has updated
       setTimeout(() => {
         if (logsContainer.current) {
@@ -131,7 +131,7 @@ const Room = () => {
         }
       }, 0)
     }
-  }, [logs.length])
+  }, [logs, showLogs])
 
   const handleJoinRoom = useCallback(() => {
     if (username.trim()) {
@@ -156,7 +156,7 @@ const Room = () => {
 
   const handleSendPing = () => {
     setShowLogs(true)
-    write('Ping from web app')
+    write('Ping')
   }
 
   if (!hasJoined) {
@@ -249,7 +249,6 @@ const Room = () => {
       </Box>
       {showLogs && (
         <Box
-          ref={logsContainer}
           sx={{
             position: 'fixed',
             left: SPACING.MEDIUM.PX,
@@ -261,10 +260,20 @@ const Room = () => {
             padding: SPACING.MEDIUM.PX,
             borderRadius: '8px',
             width: '300px',
-            zIndex: 1000
+            zIndex: 1000,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between'
           }}
         >
-          {<pre>{logs.join('\n')}</pre>}
+          <Box ref={logsContainer} sx={{ flexGrow: 1, overflow: 'auto' }}>
+            {<pre>{logs.join('\n')}</pre>}
+          </Box>
+          {connected && (
+            <Button sx={{ width: '100px' }} onClick={handleSendPing}>
+              Send Ping
+            </Button>
+          )}
         </Box>
       )}
 
@@ -279,11 +288,6 @@ const Room = () => {
           <Button sx={{ width: '100px' }} onClick={() => setShowLogs(!showLogs)}>
             {showLogs ? 'Hide Logs' : 'Show Logs'}
           </Button>
-          {connected && (
-            <Button sx={{ width: '100px' }} onClick={handleSendPing}>
-              Send Ping
-            </Button>
-          )}
         </Box>
         <Button onClick={handleCopyToClipboard}>Share Room Link</Button>
       </Box>
