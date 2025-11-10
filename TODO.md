@@ -1,13 +1,6 @@
-- [x] New dice design
-  - Better hole for charger
-  - Cleaner numbering
-  - Better rolling
-- [ ] Bug sometimes, maybe two connections? where the same dice rolls twice.
-- [ ] Low power mode
-- [ ] Need to spin before calculating new dice side. (currently sliding it causes another roll)
-- [ ] Photoshoot
-- [ ] Add photos to docs
-- [ ] One last pass of everything
+- [ ] Bug - Sometimes, a dice roll shows twice in the browser.
+- [ ] New - Implement low power mode.
+- [ ] Bug - Sliding dice without rolling triggers a dice roll.
 - [ ] Posts
   - [ ] Thingiverse
   - [ ] hackaday.io
