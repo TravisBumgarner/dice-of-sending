@@ -1,6 +1,6 @@
-- [ ] Photoshoot
-- [ ] Add photos to docs
-- [ ] One last pass of everything
+- [ ] Bug - Sometimes, a dice roll shows twice in the browser.
+- [ ] New - Implement low power mode.
+- [ ] Bug - Sliding dice without rolling triggers a dice roll.
 - [ ] Posts
   - [ ] Thingiverse
   - [ ] hackaday.io
