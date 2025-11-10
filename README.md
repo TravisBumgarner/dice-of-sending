@@ -1,18 +1,29 @@
 # Dice of Sending
 
+![Finished D6 dice](./readme/header.jpg)
+
 **Wondrous Item, uncommon**
 
 When a Dungeon Master insists you roll in plain sight, the Dice of Sending offer a clever loophole. These enchanted dice are linked by invisible arcane currents (or Bluetooth, depending on your realm’s tech level), allowing a roll in both the physical and digital planes simultaneously.
 
 Those attuned to the Dice of Sending may appear obedient while still indulging their chaotic good nature—rolling fairly, yet unpredictably.
 
-![Finished D6 dice](./readme/final.jpg)
-
 # Preface
 
 This project is still a work in progress and is mostly there but there are still some rough edges.
 
 [Join the discussion on Discord](https://discord.gg/wJ8eyUJk) (Check the `#dice-of-sending` channel).
+
+# Fairness
+
+With the latest version, I test rolled 210 times
+
+- 1 - 34
+- 2 - 31
+- 3 - 41
+- 4 - 37
+- 5 - 36
+- 6 - 31
 
 # Quick Start
 
@@ -23,8 +34,6 @@ Full setup below.
 1. Add calibration values to `arduino/dice_of_sending/dice_of_sending.ino`.
 1. Run website with `cd website && npm bootstrap && npm run dev` (Or visit [Dice of Sending](https://dice.pointlessprojects.com/) if still hosted.)
 1. Open website, invite friends to a room, connect to dice, start playing board games.
-
-
 
 ```
 const device = await navigator.bluetooth.requestDevice({
@@ -77,16 +86,19 @@ When the dice aren't being rolled, go to sleep to save power.
 1. Solder the battery to the microcontroller pads before soldering the microcontroller to the protoboard.
 1. Solder the following connections between the Seeed Studio XIAO nRF52840 and BMI160 using the references above.
 
-![Circuit](./readme/circuit.png)
+![Circuit diagram](./readme/circuit-diagram.png)
+![Circuit photo](./readme/circuit-photo.jpg)
 
-## CAD
+## 3D Models
 
 - STLs can be found in `cad/`.
 - Onshape models can be found [here](https://cad.onshape.com/documents?nodeId=a9d0374e84dc054d840f8403&resourceType=folder). Use the V2 Models.
-1. Print models.
+
+1. Print models. I opted for 60% infill. 
+1. Place some hot glue on each of the four corners. 
 1. Place circuit inside.
-1. Cut a hole for the charger.
-1. Hot glue together.
+1. Place some more hot glue along the edges of the circuit. 
+1. Hot glue the two halves together.
 
 ## Website
 
@@ -113,7 +125,7 @@ These are either bugs in the code or quirks/shortcomings.
 
 **Arduino Software can't find device**
 
-Sometimes the device needs to be reconnected a few times before it shows up in Arduino. 
+Sometimes the device needs to be reconnected a few times before it shows up in Arduino.
 
 **Bluetooth Naming**
 

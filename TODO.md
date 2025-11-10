@@ -1,3 +1,10 @@
+- [x] New dice design
+  - Better hole for charger
+  - Cleaner numbering
+  - Better rolling
+- [ ] Bug sometimes, maybe two connections? where the same dice rolls twice.
+- [ ] Low power mode
+- [ ] Need to spin before calculating new dice side. (currently sliding it causes another roll)
 - [ ] Photoshoot
 - [ ] Add photos to docs
 - [ ] One last pass of everything
